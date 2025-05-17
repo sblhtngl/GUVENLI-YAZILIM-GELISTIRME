@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Anketi Güncelle</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 12px 0 5px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .btn-submit {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-submit:hover {
+      background-color: #0056b3;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #007bff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Anketi Güncelle</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="error">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <label for="title">Başlık:</label>
+      {{ form.title(class_="form-control", id="title") }}
+      {% for error in form.title.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      <label for="question">Soru:</label>
+      {{ form.question(class_="form-control", id="question") }}
+      {% for error in form.question.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      <label for="option1">Seçenek 1:</label>
+      {{ form.option1(class_="form-control", id="option1") }}
+
+      <label for="option2">Seçenek 2:</label>
+      {{ form.option2(class_="form-control", id="option2") }}
+
+      <label for="option3">Seçenek 3:</label>
+      {{ form.option3(class_="form-control", id="option3") }}
+
+      <label for="option4">Seçenek 4:</label>
+      {{ form.option4(class_="form-control", id="option4") }}
+
+      {{ form.submit(class_="btn-submit") }}
+    </form>
+
+    <a href="{{ url_for('survey.list_surveys') }}">← Geri Dön</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kayıt Ol</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .register-container {
+      background: #fff;
+      padding: 30px 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin: -8px 0 10px;
+    }
+
+    .message {
+      color: green;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 12px;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Kayıt Ol</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <p class="message">{{ messages[0] }}</p>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      {{ form.username(class_="form-control", placeholder="Kullanıcı Adı") }}
+      {% for error in form.username.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      {{ form.password(class_="form-control", placeholder="Şifre") }}
+      {% for error in form.password.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      {{ form.role(class_="form-control") }}
+      {% for error in form.role.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      {{ form.submit(class_="btn-primary") }}
+    </form>
+
+    <a href="{{ url_for('auth_vuln.vuln_login') }}">Zaten hesabın var mı? Giriş Yap</a>
+  </div>
+</body>
+</html>

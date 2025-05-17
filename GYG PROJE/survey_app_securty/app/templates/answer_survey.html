@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ survey['title'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        input[type="radio"] {
+            transform: scale(1.2);
+        }
+
+        button {
+            margin-top: 15px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #votedMessage {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        ul#results {
+            padding-left: 20px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>{{ survey['title'] }}</h2>
+    <p>{{ survey['question'] }}</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="error">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if not already_voted %}
+        <form id="voteForm" method="POST" data-survey-id="{{ survey_id }}">
+            <fieldset>
+                <legend>Seçenekler</legend>
+                {% for option in ['option1', 'option2', 'option3', 'option4'] %}
+                    {% if survey[option] %}
+                        <label class="option">
+                            <input type="radio" name="answer" value="{{ survey[option] }}" required>
+                            {{ survey[option] }}
+                        </label>
+                    {% endif %}
+                {% endfor %}
+            </fieldset>
+            <!-- ✅ CSRF token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Oy Ver</button>
+        </form>
+        <p id="votedMessage" style="display: none;">Oy verdiniz, teşekkürler!</p>
+    {% else %}
+        <p class="error"><strong>Bu ankete zaten oy verdiniz.</strong></p>
+    {% endif %}
+
+    <hr>
+    <h3>Sonuçlar</h3>
+    <ul id="results">
+        {% for row in results %}
+            <li>{{ row.answer }}: {{ row.total }} oy ({{ (row.total / total * 100) | round(1) }}%)</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="{{ url_for('dashboard.home') }}">← Geri Dön</a>
+</div>
+
+<!-- ✅ JS - AJAX oy verme işlemi -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const voteForm = document.getElementById("voteForm");
+    if (!voteForm) return;
+
+    voteForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const surveyId = voteForm.getAttribute("data-survey-id");
+        const formData = new FormData(voteForm);
+
+        // ✅ CSRF token'ı da gönder
+        const csrfToken = voteForm.querySelector('input[name="csrf_token"]').value;
+        formData.append("csrf_token", csrfToken);
+        formData.append("survey_id", surveyId);
+
+        fetch("/vote/submit", {
+            method: "POST",
+            body: formData,
+            credentials: "same-origin"
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/survey/list";
+            } else {
+                alert(data.message || "Bir hata oluştu.");
+            }
+        })
+        .catch(() => {
+            alert("Sunucuya bağlanılamadı.");
+        });
+    });
+});
+</script>
+</body>
+</html>

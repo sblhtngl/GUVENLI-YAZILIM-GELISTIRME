@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Paneli (Zafiyetli)</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 25px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Paneli (Zafiyetli)</h1>
+    <div class="button-container">
+      <a href="{{ url_for('survey.list_surveys_vuln') }}" class="btn">Tüm Anketleri Listele</a>
+      <a href="{{ url_for('survey.vote_list_vuln') }}" class="btn">Oylanabilir Anketler</a>
+      <a href="{{ url_for('survey.results_vuln') }}" class="btn">Anket Sonuçlarını Görüntüle</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Anket Oluştur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 40px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 25px;
+            background-color: #28a745;
+            color: white;
+            padding: 14px 0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .flash-message {
+            text-align: center;
+            margin-bottom: 15px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Yeni Anket Oluştur</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-message">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <label for="title">Başlık:</label>
+            {{ form.title(class_="form-control", id="title") }}
+
+            <label for="question">Soru:</label>
+            {{ form.question(class_="form-control", id="question") }}
+
+            <label>Seçenekler:</label>
+            {{ form.option1(class_="form-control", placeholder="Seçenek 1") }}
+            {{ form.option2(class_="form-control", placeholder="Seçenek 2") }}
+            {{ form.option3(class_="form-control", placeholder="Seçenek 3") }}
+            {{ form.option4(class_="form-control", placeholder="Seçenek 4") }}
+
+            {{ form.submit(class_="btn btn-success") }}
+        </form>
+
+        <a href="{{ url_for('dashboard.home') }}">← Geri Dön</a>
+    </div>
+</body>
+</html>

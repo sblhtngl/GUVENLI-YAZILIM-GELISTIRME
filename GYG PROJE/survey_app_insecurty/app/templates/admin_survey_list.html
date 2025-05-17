@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Anketler</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #f1f1f1;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 6px;
+    }
+    .survey-actions a {
+      margin-right: 10px;
+      text-decoration: none;
+      color: #007bff;
+    }
+    .survey-actions a:hover {
+      text-decoration: underline;
+    }
+    .create-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .create-btn:hover {
+      background-color: #218838;
+    }
+    .back-link {
+      display: block;
+      margin-top: 30px;
+      text-align: center;
+    }
+    .flash-message {
+      color: red;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Anketler</h2>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-message">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <ul>
+    {% for survey in surveys %}
+      <li>
+        <strong>{{ survey['title']|safe }}</strong> – {{ survey['question']|safe }}
+        <small>(Sahibi: {{ survey['username']|safe }})</small>
+
+        <div class="survey-actions">
+          {% if current_user.role == 'owner' %}
+            <a href="{{ url_for('survey.update_survey', id=survey['id']) }}">[Güncelle]</a>
+            <a href="{{ url_for('survey.delete_survey', id=survey['id']) }}">[Sil]</a>
+            <a href="{{ url_for('survey.answer', survey_id=survey['id']) }}">[Oyları Görüntüle]</a>
+          {% elif current_user.role == 'admin' %}
+            <a href="{{ url_for('survey.answer', survey_id=survey['id']) }}">[Oyları Görüntüle]</a>
+          {% elif current_user.role == 'user' %}
+            <a href="{{ url_for('survey.answer', survey_id=survey['id']) }}">[Oyla]</a>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if current_user.role == 'owner' %}
+    <a class="create-btn" href="{{ url_for('survey.create') }}">+ Anket Oluştur</a>
+  {% endif %}
+
+  <div class="back-link">
+    <a href="{{ url_for('dashboard.home') }}">← Geri Dön</a>
+  </div>
+</div>
+</body>
+</html>

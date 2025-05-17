@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Anketler</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Mevcut Anketler</h2>
+
+        {% if surveys %}
+            <ul>
+                {% for survey in surveys %}
+                    <li>
+                        <strong>{{ survey[1] }}</strong><br>
+                        <span>{{ survey[2] }}</span><br>
+                        <a href="{{ url_for('survey.answer', survey_id=survey[0]) }}">→ Oy Ver</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="error">Henüz hiç anket bulunmamaktadır.</p>
+        {% endif %}
+
+        <a href="/dashboard">← Geri Dön</a>
+    </div>
+</body>
+</html>
